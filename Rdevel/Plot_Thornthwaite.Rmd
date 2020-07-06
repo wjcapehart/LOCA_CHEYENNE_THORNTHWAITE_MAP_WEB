@@ -1,0 +1,465 @@
+---
+title: "View Thornthwaite Budgets as Mathergrams"
+output: html_notebook
+---
+
+# Load Libraries
+```{r}
+
+# load libraries
+
+library(package = "tidyverse")
+library(package = "lubridate")
+library(package = "tidync")
+library(package = "ncdf4")
+library(package = "ncmeta")
+library(package = "RCurl")
+
+library(package = "usmap")
+
+
+```
+# Get User Controlled Parameters
+
+
+## List of Climate Periods
+
+| 10-y Climate Period Duration | 30-y Climate Period Duration |
+|------------------------------|------------------------------|
+|        1950-1959             |          1950-1979           |
+|        1960-1969             |          1970-1999           |
+|        1970-1979             |          1976-2005           |
+|        1980-1989             |          2000-2029           |
+|        1990-1999             |          2011-2040           |
+|        2000-2009             |          2036-2065           |
+|        2010-2019             |          2061-2090           |
+|        2020-2029             |          2070-2099           |
+|        2030-2039             |                              |
+|        2040-2049             |                              |
+|        2050-2059             |                              |
+|        2060-2069             |                              |
+|        2070-2079             |                              |
+|        2080-2089             |                              |
+|        2090-2099             |                              |
+
+## List of Variables
+
+```{r}
+
+# Get Variable List and LUT
+
+variable_metadata_file = "~/GitHub/LOCA_CHEYENNE_THORNTHWAITE_WEB/Thornthwaite_Budget_Parameters.RData"
+
+load(file = variable_metadata_file)
+
+
+print(thornthwaite_variable_list)
+
+
+```
+
+
+##  User Controlled Parameters Entered
+       
+```{r}
+
+# Get User Controlled Parameters - Emulating Pull-down Menus
+
+period_length = "30" # climatology period years
+
+# Latitude Longitude
+
+target_latitude  =   44.09375
+target_longitude = -103.21875
+
+# Periods
+
+baseline_period = "1976-2005"
+
+examined_period = "2036-2065"
+
+```
+
+# set Netcdf Import Variables
+
+```{r}
+
+# set Netcdf Import Variables
+
+variable = thornthwaite_variable_list$variable
+
+target_variables = str_c("mean_",
+                        thornthwaite_variable_list$variable,
+                        sep = "")
+
+stdev_variables =  str_c("stdev_",
+                        thornthwaite_variable_list$variable,
+                        sep = "")
+
+
+```
+
+
+
+## Pull Available Period Dates
+
+```{r}
+
+# Get the calendar values
+
+period_file_location = str_c("~/GitHub/LOCA_CHEYENNE_THORNTHWAITE_WEB/Cheyenne_climatology_years_",
+                             period_length,
+                             "-yr.RData",
+                             sep="") 
+
+load(file = period_file_location)
+
+
+
+print(climatology_period_info)
+
+```
+
+
+
+# Make a DEM Reference Map
+
+```{r}
+
+# Make a DEM Reference Map
+
+dem_file_location = "~/GitHub/LOCA_CHEYENNE_THORNTHWAITE_WEB/gtopo30_016_Cheyenne.RData"
+
+load(file = dem_file_location)
+
+# Our domain boundary for our maps
+
+min_lat =   min(dem_frame$lat) 
+max_lat =   max(dem_frame$lat) 
+
+min_lon  =   min(dem_frame$lon) 
+max_lon  =   max(dem_frame$lon) 
+
+
+Lon = unique(dem_frame$lon)
+Lat = unique(dem_frame$lat)
+
+
+# Cracking the Natural Map Boundary Set for the first-level subdivisions of 
+# the US and Canada (states and provinces)
+  
+us_states = map_data(map = "state")
+counties  = map_data(map = "county")
+
+```
+# Plot DEM
+```{r}
+
+# Plot
+  
+ggplot(data = dem_frame)+
+  aes(x    = lon, 
+      y    = lat, 
+      fill = elevation) +
+  theme_bw() +
+  labs(title    = "Cheyenne Basin",
+       subtitle =  dem_long_name,
+       fill      = "m",
+       caption = str_c("Coordinates: ",
+                       target_longitude," °E, ",
+                       target_latitude, " °N",
+                       sep = "")) +
+  xlab(label = "Longitude") +
+  ylab(label = "Latitude") +
+  coord_fixed(xlim    = c(min_lon, max_lon),
+              ylim    = c(min_lat, max_lat) ,
+              ratio   = 1/cos(pi/180 * mean(dem_frame$lat)) ) +
+  scale_fill_gradientn(colors     = terrain.colors(10),
+                       space      = "Lab",
+                       na.value   = "white",
+                       aesthetics = "fill",
+                       limits     = c(min(dem_frame$elevation),
+                                      max(dem_frame$elevation))) +
+  geom_raster()  +
+  geom_polygon(data    = us_states,
+               mapping = aes(x     =   long, 
+                             y     =    lat,
+                             group =  group),
+               fill    = NA, 
+               size    = 1.0, 
+              color   = "black")  +
+  geom_polygon(data    = counties,
+               mapping = aes(x     =   long, 
+                             y     =    lat,
+                             group =  group),
+               size    = 0.25, 
+               fill    = NA, 
+               color   = "black")  +
+  geom_vline(xintercept = target_longitude,
+             color      = "white") +
+  geom_hline(yintercept = target_latitude,
+             color      = "white") 
+
+
+
+
+```
+
+
+# Make an Available Water Capacity Reference Map
+
+```{r}
+
+# Make a DEM Reference Map
+
+awc_file_location = "~/GitHub/LOCA_CHEYENNE_THORNTHWAITE_WEB/AWC_Cheyenne.RData"
+
+load(file = awc_file_location)
+
+
+
+```
+
+# Plot AWC
+
+```{r}
+# Plot AWC
+  
+ggplot(data = awc_frame)+
+  aes(x    = lon, 
+      y    = lat, 
+      fill = usda_awc) +
+  theme_bw() +
+  labs(title    = "Cheyenne Basin",
+       subtitle =  "Max Available Soil Water Storage",
+       fill      = "mm",
+       caption = str_c("Coordinates: ",
+                       target_longitude," °E, ",
+                       target_latitude, " °N",
+                       sep = "")) +
+  xlab(label = "Longitude") +
+  ylab(label = "Latitude") +
+  coord_fixed(xlim    = c(min_lon, max_lon),
+              ylim    = c(min_lat, max_lat) ,
+              ratio   = 1/cos(pi/180 * mean(awc_frame$lat)) ) +
+  scale_fill_distiller(palette    = "YlGnBu",
+                       space      = "Lab",
+                       direction  = 1,
+                       na.value   = "white",
+                       guide      = "colourbar",
+                       aesthetics = "fill",
+                       limits     = c(0,max(awc_frame$usda_awc))) +
+  geom_raster()  +
+  geom_polygon(data    = us_states,
+               mapping = aes(x     =   long, 
+                             y     =    lat,
+                             group =  group),
+               fill    = NA, 
+               size    = 1.0, 
+              color   = "black")  +
+  geom_polygon(data    = counties,
+               mapping = aes(x     =   long, 
+                             y     =    lat,
+                             group =  group),
+               size    = 0.25, 
+               fill    = NA, 
+               color   = "black")  +
+  geom_vline(xintercept = target_longitude,
+             color      = "white") +
+  geom_hline(yintercept = target_latitude,
+             color      = "white") 
+
+
+
+
+```
+# Crack the Big NetCDF File for one parameter
+
+```{r}
+
+# Crack the Big NetCDF File for one parameter
+     
+data_file_location = str_c("~/GitHub/LOCA_CHEYENNE_THORNTHWAITE_WEB/local_climatologies/LOCA_THORNTHWAITE_ALL_ENSEMBLES_CLIM_",
+                           period_length,
+                           "-yr.nc", 
+                           sep = "")
+
+
+variable_frame = tidync(x = data_file_location)  %>% 
+  activate(target_variables) %>%
+  hyper_tibble(select_var = target_variables,
+               lat        = (lat == target_latitude),
+               lon        = (lon == target_longitude)) %>%
+  mutate(ensemble           = as.factor(ensemble),
+         climatology_period = as.factor(climatology_period),
+         month              = fct_recode(as.factor(month), 
+                                         Jan  =  "1",
+                                         Feb  =  "2",
+                                         Mar  =  "3",
+                                         Apr  =  "4",
+                                         May  =  "5",
+                                         Jne  =  "6",
+                                         Jly  =  "7",
+                                         Aug  =  "8",
+                                         Sep  =  "9",
+                                         Oct  = "10",
+                                         Nov  = "11",
+                                         Dec  = "12") ) 
+
+variable_frame = left_join(x  = variable_frame,
+                           y  = climatology_period_info,
+                           by = "climatology_period")  %>%
+  mutate(scenario = ifelse(test = scenario == "HIST_RCP45",
+                           yes  = string_rcp45,
+                           no   = "RCP 8.5")) %>%
+  select(-c("string_rcp45"))
+
+variable_frame$scenario = as.factor(variable_frame$scenario)
+
+variable_frame = variable_frame %>%
+  mutate(scenario_label = str_c(scenario,
+                                " (",
+                                climatology_period,
+                                ")",
+                                sep = ""))
+
+variable_frame$scenario_label = as.factor(variable_frame$scenario_label)
+
+
+variable_frame = gather(data   = variable_frame,
+                        key   = "variable",
+                        value = "value",
+                        target_variables)
+
+variable_frame = variable_frame %>%
+  mutate(variable = str_sub(string = variable, 
+                            start  = 6))
+
+
+
+variable_frame$variable = fct_recode(variable_frame$variable, 
+                                         `Deficit (mm)`  =  "deficit",
+                                         `Evapotranspiration (mm)`  =  "evapotranspiration",
+                                         `Monthly Precipitation (mm)`  =  "monthly_precipitation",
+                                         `Monthly Temperature (°C)`  =  "monthly_temperature",
+                                         `Potential Evaporation (mm)`  =  "potential_evapotranspiration",
+                                         `Recharge (mm)`  =  "recharge",
+                                         `Snowpack (mm)`  =  "snowpack",
+                                         `Storage (mm)`  =  "storage",
+                                         `Surplus (mm)`  =  "surplus") 
+
+
+Ensembles = levels(variable_frame$ensemble)
+Scenarios = levels(variable_frame$scenario)
+Period    = levels(variable_frame$climatology_period)
+Month     = levels(variable_frame$month)
+Variable  = levels(variable_frame$variable)
+
+
+
+
+
+```
+
+
+# Reduce Data to Targeted Years
+
+
+```{r}
+# Reduce Data to Targeted Years
+
+plotting_master_frame = variable_frame %>%
+  filter((climatology_period == baseline_period) | 
+         (climatology_period == examined_period)) %>%
+  mutate(month_num = as.numeric(month))
+  
+
+stats_frame = plotting_master_frame %>%
+  group_by(scenario,
+           month,
+           variable) %>%
+  summarize(max    = max(value),
+            min    = min(value),
+            mean   = mean(value),
+            p05    = quantile(x = value, probs=0.05),
+            p25    = quantile(x = value, probs=0.25),
+            p50    = median(value),
+            p75    = quantile(x = value, probs=0.75),
+            p95    = quantile(x = value, probs=0.95)) %>%
+  ungroup() %>%
+  mutate(month_num = as.numeric(month))
+  
+```
+
+
+
+# Plot frame
+
+```{r}
+
+
+for (Targert_Variable in Variable) {
+  
+  plotting_frame = plotting_master_frame %>%
+    filter(variable == Targert_Variable)
+
+  ribbon_frame = stats_frame %>%
+    filter(variable == Targert_Variable) 
+
+  myplot = ggplot(data    = plotting_frame) +
+            aes(x    = month_num,
+                y    = value) +
+            labs(title = "Point-based Thornthwaite Budget",
+                 subtitle = str_c(baseline_period,  
+                                  " Historical Period vs ",
+                                  examined_period,
+                                  " Future Period",
+                                  sep = ""),
+                 caption = str_c("Coordinates: ",
+                                 target_longitude," °E, ",
+                                 target_latitude, " °N",
+                                 sep = ""), 
+                 y     = Targert_Variable) +
+            scale_fill_manual( values = c( "cyan",      
+                                           "yellow",    
+                                           "magenta"),
+                               name   = NULL) + 
+            scale_color_manual(values = c( "darkcyan", 
+                                           "goldenrod", 
+                                           "darkmagenta"),
+                               name   = NULL) +
+            theme_bw() +
+            theme(strip.background = element_rect(fill=NA),
+                  axis.title.x     = element_blank(),
+                  axis.ticks.x     = element_blank()) +
+            scale_x_continuous(breaks       = unique(plotting_frame$month_num),
+                               labels       = unique(plotting_frame$month),
+                               minor_breaks = NULL) +
+            geom_ribbon(data    = ribbon_frame,
+                        mapping = aes(x     = month_num,
+                                      y     = NULL,
+                                      ymax  = p95,
+                                      ymin  = p05,
+                                      color = NULL,
+                                      fill  = scenario),
+                          alpha = 0.1) +
+            geom_ribbon(data    = ribbon_frame,
+                        mapping = aes(x     = month_num,
+                                      y     = NULL,
+                                      ymax  = p75,
+                                      ymin  = p25,
+                                      color = NULL,
+                                      fill  = scenario),
+                          alpha = 0.2) +
+          
+            geom_line(data    = ribbon_frame,
+                      mapping = aes(x     = month_num,
+                                    y     = mean,
+                                    color = scenario))  
+    
+    
+  print(myplot)  
+    
+ }   
+  
+```
