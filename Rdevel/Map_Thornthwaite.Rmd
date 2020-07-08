@@ -19,6 +19,26 @@ library(package = "usmap")
 
 
 ```
+
+
+# Get OS
+
+```{r}
+# Get OS
+
+OS = Sys.info()[1]
+
+if (OS == "Darwin")
+{
+  root_path = "~/GitHub/LOCA_CHEYENNE_THORNTHWAITE_MAP_WEB/" 
+} else {
+  root_path = "~/GitHub/LOCA_CHEYENNE_THORNTHWAITE_MAP_WEB/" 
+}
+
+```
+
+
+
 # Get User Controlled Parameters
 
 
@@ -48,7 +68,9 @@ library(package = "usmap")
 
 # Get Variable List and LUT
 
-variable_metadata_file = "~/GitHub/LOCA_CHEYENNE_THORNTHWAITE_WEB/Thornthwaite_Budget_Parameters.RData"
+variable_metadata_file = str_c(root_path,
+                               "Thornthwaite_Budget_Parameters.RData",
+                               sep = "")
 
 load(file = variable_metadata_file)
 
@@ -174,7 +196,8 @@ if (str_detect(string = selected_variable, pattern = "snow"))  {
 
 # Get the calendar values
 
-period_file_location = str_c("~/GitHub/LOCA_CHEYENNE_THORNTHWAITE_WEB/Cheyenne_climatology_years_",
+period_file_location = str_c(root_path,
+                             "Cheyenne_climatology_years_",
                              period_length,
                              "-yr.RData",
                              sep="") 
@@ -195,7 +218,9 @@ print(climatology_period_info)
 
 # Make a DEM Reference Map
 
-dem_file_location = "~/GitHub/LOCA_CHEYENNE_THORNTHWAITE_WEB/gtopo30_016_Cheyenne.RData"
+dem_file_location = str_c(root_path,
+                          "gtopo30_016_Cheyenne.RData",
+                          sep="") 
 
 load(file = dem_file_location)
 
@@ -266,7 +291,9 @@ Lat = unique(dem_frame$lat)
 
 # Make a DEM Reference Map
 
-awc_file_location = "~/GitHub/LOCA_CHEYENNE_THORNTHWAITE_WEB/AWC_Cheyenne.RData"
+awc_file_location =  str_c(root_path,
+                          "AWC_Cheyenne.RData",
+                          sep="") 
 
 load(file = awc_file_location)
 
@@ -334,7 +361,9 @@ ggplot(data = awc_frame)+
 
 # Crack the Big NetCDF File for one parameter
      
-data_file_location = str_c("~/GitHub/LOCA_CHEYENNE_THORNTHWAITE_WEB/local_climatologies/LOCA_THORNTHWAITE_ALL_ENSEMBLES_CLIM_",
+data_file_location = str_c(root_path,
+                          "/local_climatologies/",
+                          "LOCA_THORNTHWAITE_ALL_ENSEMBLES_CLIM_",
                            period_length,
                            "-yr.nc", 
                            sep = "")

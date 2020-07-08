@@ -48,7 +48,7 @@ library(package = "usmap")
 
 # Get Variable List and LUT
 
-variable_metadata_file = "~/GitHub/LOCA_CHEYENNE_THORNTHWAITE_WEB/Thornthwaite_Budget_Parameters.RData"
+variable_metadata_file = "~/GitHub/LOCA_CHEYENNE_THORNTHWAITE_MAP_WEB/Thornthwaite_Budget_Parameters.RData"
 
 load(file = variable_metadata_file)
 
@@ -107,7 +107,7 @@ stdev_variables =  str_c("stdev_",
 
 # Get the calendar values
 
-period_file_location = str_c("~/GitHub/LOCA_CHEYENNE_THORNTHWAITE_WEB/Cheyenne_climatology_years_",
+period_file_location = str_c("~/GitHub/LOCA_CHEYENNE_THORNTHWAITE_MAP_WEB/Cheyenne_climatology_years_",
                              period_length,
                              "-yr.RData",
                              sep="") 
@@ -128,7 +128,7 @@ print(climatology_period_info)
 
 # Make a DEM Reference Map
 
-dem_file_location = "~/GitHub/LOCA_CHEYENNE_THORNTHWAITE_WEB/gtopo30_016_Cheyenne.RData"
+dem_file_location = "~/GitHub/LOCA_CHEYENNE_THORNTHWAITE_MAP_WEB/gtopo30_016_Cheyenne.RData"
 
 load(file = dem_file_location)
 
@@ -212,7 +212,7 @@ ggplot(data = dem_frame)+
 
 # Make a DEM Reference Map
 
-awc_file_location = "~/GitHub/LOCA_CHEYENNE_THORNTHWAITE_WEB/AWC_Cheyenne.RData"
+awc_file_location = "~/GitHub/LOCA_CHEYENNE_THORNTHWAITE_MAP_WEB/AWC_Cheyenne.RData"
 
 load(file = awc_file_location)
 
@@ -279,7 +279,7 @@ ggplot(data = awc_frame)+
 
 # Crack the Big NetCDF File for one parameter
      
-data_file_location = str_c("~/GitHub/LOCA_CHEYENNE_THORNTHWAITE_WEB/local_climatologies/LOCA_THORNTHWAITE_ALL_ENSEMBLES_CLIM_",
+data_file_location = str_c("~/GitHub/LOCA_CHEYENNE_THORNTHWAITE_MAP_WEB/local_climatologies/LOCA_THORNTHWAITE_ALL_ENSEMBLES_CLIM_",
                            period_length,
                            "-yr.nc", 
                            sep = "")
