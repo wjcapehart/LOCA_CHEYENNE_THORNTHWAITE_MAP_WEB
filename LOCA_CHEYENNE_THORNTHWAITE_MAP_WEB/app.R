@@ -34,15 +34,36 @@ library(package = "usmap")
 
 OS      = Sys.info()[1]
 Machine = Sys.info()[4]
-
+print("")
+print("--------------------------------")
+print("")
 print(OS)
+print("")
+print("--------------------------------")
 print("")
 print(Machine)
 print("")
+print("--------------------------------")
+print("")
 print(as.data.frame(Sys.info()))
+print("")
+print("--------------------------------")
+print("")
+print(getwd())
+print("")
+print("--------------------------------")
+print("")
+print(list.files(recursive = FALSE))
+print("")
+print("--------------------------------")
+print("--------------------------------")
+print("")
+
+
 
 root_path = "./" 
-
+print("")
+print("--------------------------------")
 if (str_detect(string  = Machine,
                pattern = "mandrenke"))
 {
