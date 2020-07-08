@@ -1,0 +1,13 @@
+name: LOCA_CHEYENNE_THORNTHWAITE_MAP_WEB
+title: LOCA_CHEYENNE_THORNTHWAITE_MAP_WEB
+username:
+account: bill-capehart
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2549941
+bundleId: 3368790
+url: https://bill-capehart.shinyapps.io/LOCA_CHEYENNE_THORNTHWAITE_MAP_WEB/
+when: 1594239294.69609
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .gitattributes|.RDataTmp|LICENSE|README.md|Rdevel/manual_code.R|Rdevel/Map_Thornthwaite.nb.html|Rdevel/Map_Thornthwaite.Rmd|Rdevel/Plot_Thornthwaite.nb.html|Rdevel/Plot_Thornthwaite.Rmd
