@@ -38,6 +38,8 @@ Machine = Sys.info()[4]
 print(OS)
 print("")
 print(Machine)
+print("")
+print(as.data.frame(Sys.info()))
 
 root_path = "./" 
 
