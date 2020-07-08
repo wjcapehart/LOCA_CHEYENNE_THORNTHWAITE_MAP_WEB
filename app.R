@@ -107,7 +107,7 @@ input = NULL
     input$period_length     = "30" # climatology period years
     input$selected_variable = "monthly_precipitation"
     input$baseline_period   = "1976-2005"
-    input$examined_period   = "2036-2065"
+    input$examined_period   = "2070-2099"
 
 
 period_file_location = str_c(root_path,
@@ -162,15 +162,16 @@ ui <- fluidPage(
             selectInput(inputId  = "baseline_period",
                         label    = "Baseline Period",
                         choices  = baseline_period_choices$climatology_period,
-                        selected = baseline_period_choices$climatology_period[nrow(baseline_period_choices)]),
+                        selected = baseline_period_choices$climatology_period[3]),
             selectInput(inputId  = "examined_period",
                         label    = "Examined Period",
                         choices  = examined_period_choices$climatology_period,
-                        selected = examined_period_choices$climatology_period[nrow(examined_period_choices)]),
+                        selected = examined_period_choices$climatology_period[5]),
             selectInput(inputId  = "selected_variable",
                         label    = "Variable to Plot",
                         choices  = thornthwaite_variable_list$variable,
                         selected = thornthwaite_variable_list$variable[4]),
+           # submitButton("Submit")
 
         ),
 
