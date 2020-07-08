@@ -18,6 +18,7 @@ library(package = "tidync")
 library(package = "ncdf4")
 library(package = "ncmeta")
 library(package = "RCurl")
+library(package = "maps")
 
 library(package = "usmap")
 
@@ -31,14 +32,27 @@ library(package = "usmap")
 #
 # Get OS
 
-OS = Sys.info()[1]
+OS      = Sys.info()[1]
+Machine = Sys.info()[4]
 
-if (OS == "Darwin")
+print(OS)
+print("")
+print(Machine)
+
+root_path = "./" 
+
+if (str_detect(string  = Machine,
+               pattern = "mandrenke"))
 {
     root_path = "~/GitHub/LOCA_CHEYENNE_THORNTHWAITE_MAP_WEB/" 
-} else {
+}
+
+if (str_detect(string  = Machine,
+               pattern = "kyrill"))
+{
     root_path = "~/GitHub/LOCA_CHEYENNE_THORNTHWAITE_MAP_WEB/" 
 }
+
 
 #
 ##################################################################
@@ -145,6 +159,7 @@ ui <- fluidPage(
     sidebarLayout(
         sidebarPanel(
             p("Note: This app takes about 1-to-2 minutes to load the needed data, process it, and render it."),
+            p("If running under the shinyapps.io domain, it may take even longer."),
             p("Changing settings will require data to be reloaded."),
             p("Be patient as the page re-draws."),
             

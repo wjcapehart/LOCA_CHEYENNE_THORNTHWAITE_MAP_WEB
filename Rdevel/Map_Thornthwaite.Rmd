@@ -28,6 +28,8 @@ library(package = "usmap")
 
 OS = Sys.info()[1]
 
+print(OS)
+
 if (OS == "Darwin")
 {
   root_path = "~/GitHub/LOCA_CHEYENNE_THORNTHWAITE_MAP_WEB/" 
