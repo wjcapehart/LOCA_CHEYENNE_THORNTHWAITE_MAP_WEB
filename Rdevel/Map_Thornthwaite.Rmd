@@ -13,7 +13,7 @@ library(package = "lubridate")
 library(package = "tidync")
 library(package = "ncdf4")
 library(package = "ncmeta")
-library(package = "RCurl")
+#library(package = "RCurl")
 
 library(package = "usmap")
 

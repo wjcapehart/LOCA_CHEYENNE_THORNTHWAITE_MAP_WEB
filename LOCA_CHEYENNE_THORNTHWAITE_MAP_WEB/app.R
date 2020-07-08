@@ -13,13 +13,8 @@
 
 library(package = "shiny") 
 library(package = "tidyverse")
-library(package = "lubridate")
 library(package = "tidync")
-library(package = "ncdf4")
-library(package = "ncmeta")
-library(package = "RCurl")
 library(package = "maps")
-
 library(package = "usmap")
 
 ###############################################################################
@@ -47,15 +42,12 @@ print("--------------------------------")
 print("")
 print(as.data.frame(Sys.info()))
 print("")
-print("--------------------------------")
-print("")
-print(getwd())
+print(list.files(recursive = TRUE))
 print("")
 print("--------------------------------")
 print("")
-print(list.files(recursive = FALSE))
+system("pwd")
 print("")
-print("--------------------------------")
 print("--------------------------------")
 print("")
 
