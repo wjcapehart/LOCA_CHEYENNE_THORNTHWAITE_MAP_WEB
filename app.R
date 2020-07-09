@@ -157,7 +157,7 @@ ui <- fluidPage(
             
             selectInput(inputId  = "period_length",
                         label    = "Climatology Period Duration",
-                        choices  = c(10,30),
+                        choices  = c(30),
                         selected = 30),
             selectInput(inputId  = "baseline_period",
                         label    = "Baseline Period",
@@ -177,7 +177,7 @@ ui <- fluidPage(
 
         
         mainPanel(
-            h2("Terrain and Available Water Conent"),
+            h2("Terrain and Available Water Content"),
             
             splitLayout(
                 # Show a plot of the Terrain Map
