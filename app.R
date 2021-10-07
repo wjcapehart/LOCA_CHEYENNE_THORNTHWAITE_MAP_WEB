@@ -42,7 +42,7 @@ if (str_detect(string  = Machine,
 if (str_detect(string  = Machine,
                pattern = "kyrill"))
 {
-    root_path = "~/GitHub/LOCA_CHEYENNE_THORNTHWAITE_MAP_WEB/" 
+    root_path = "./LOCA_CHEYENNE_THORNTHWAITE_MAP_WEB/" 
 }
 
 
